@@ -1,5 +1,6 @@
 # MuJoCo-Example-Manipulation
 
+Welcome to **MuJoCo-Example-Manipulation**, a repository designed to showcase practical examples of robotic manipulation using DeepMind's **[MuJoCo](https://github.com/google-deepmind/mujoco)** framework.
 
 ## Installation
 
