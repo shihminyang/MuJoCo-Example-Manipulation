@@ -1,0 +1,103 @@
+<mujoco model="cube_scene">
+  <!-- Add Franka robot -->
+  <include file="panda.xml"/>
+
+  <!-- noslip_iterations is important otherwise object slip when grasped
+       (more than 3 will just slow you down and have no other effect) -->
+  <option gravity="0 0 -9.81" timestep="0.001" noslip_iterations="3"
+          impratio="20" cone="elliptic" density="1.2" viscosity="0.00002" integrator="implicitfast">
+    <flag multiccd="enable"/>
+  </option>
+        <!-- impratio="20" cone="elliptic" density="1.2" viscosity="0.00002" integrator="implicitfast"> -->
+
+  <visual>
+    <map znear="0.01" zfar="50"/>
+    <!-- For visualize contact -->
+    <scale forcewidth="0.03" contactwidth="0.03" contactheight="0.01"/>
+    <rgba contactpoint="0 0.5 0 1" />
+    <global offwidth="400" offheight="400"/>
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="512"/>
+
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4"
+        rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8" width="300" height="300"/>
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5"
+        reflectance="0."/>
+
+    <!-- Floor -->
+    <texture name="texplane" file="textures/wood-tiles.png" type="2d"/>
+    <material name="floorplane" reflectance="0." shininess="0.0" specular="0.0" texrepeat="2 2" texture="texplane" texuniform="true"/>
+
+    <!-- bins -->
+    <texture file="textures/light-wood.png" type="2d" name="tex-light-wood"/>
+    <texture file="textures/dark-wood.png" type="2d" name="tex-dark-wood"/>
+    <material name="light-wood" reflectance="0" texrepeat="15 15" texture="tex-light-wood" texuniform="true"/>
+    <material name="dark-wood" reflectance="0" texrepeat="5 5" texture="tex-dark-wood" texuniform="true"/>
+
+    <!-- paper-wood table texture and material (NOTE: cube needs use square images) -->
+    <texture file="textures/paper-wood.png" type="cube" name="tex-paperwood"/>
+    <material name="table_paperwood" texture="tex-paperwood" texrepeat="1 1" shininess="0.0" reflectance="0.0" specular="0."/>
+
+  </asset>
+
+  <worldbody>
+    <!-- Floor -->
+    <geom name="floor" type="plane" material="floorplane" pos="0 0 0" size="5 5 0.1"/>
+
+    <!-- Add the light -->
+    <light name="light_1" directional="true" castshadow="false" pos="0 2 4" dir="0.4 -2 -4" diffuse=".7 .7 .7"/>
+    <light name="light_2" directional="false" castshadow="true" pos="0.4 0 4" dir="0.15 0 -1" cutoff="60" exponent="30" diffuse=".5 .5 .5"/>
+
+    <!-- Table  -->
+    <body name="table" pos="0.4 0 0.5">
+      <geom name="table_collision" type="box" size="0.5 0.5 0.5"/>
+      <geom name="table_visual" type="box" contype="0" conaffinity="0" group="1" size="0.5 0.5 0.5" material="table_paperwood"/>
+    </body>
+
+    <!-- Container -->
+    <body name="container" pos="0.65 0 1">
+      <geom name="container_bottom_collision" type="box" priority="1" size="0.224 0.224 0.005" rgba="0 0 0 1" friction="0.5 0.005 0.0001" pos="0 0 0.005"/>
+      <geom name="container_bottom_visual" type="box" contype="0" conaffinity="0" group="1" size="0.224 0.224 0.005" material="table_paperwood" pos="0 0 0.005"/>
+
+      <geom name="container_left_collision" type="box" solref="0.0005 1" priority="1" size="0.224 0.01 0.025" rgba="0 0 0 1" friction="0.5 0.005 0.0001" pos="0 0.214 0.035"/>
+      <geom name="container_left_visual" type="box" contype="0" conaffinity="0" group="1" size="0.224 0.01 0.025" material="light-wood" pos="0 0.214 0.035"/>
+
+      <geom name="container_right_collision" type="box" solref="0.0005 1" priority="1" size="0.224 0.01 0.025" rgba="0 0 0 1" friction="0.5 0.005 0.0001" pos="0 -0.214 0.035"/>
+      <geom name="container_right_visual" type="box" contype="0" conaffinity="0" group="1" size="0.224 0.01 0.025" material="light-wood" pos="0 -0.214 0.035"/>
+
+      <geom name="container_far_collision" type="box" solref="0.005 1" priority="1" size="0.01 0.224 0.025" rgba="0 0 0 1" friction="0.5 0.005 0.0001" pos="0.214 0 0.035"/>
+      <geom name="container_far_visual" type="box" contype="0" conaffinity="0" group="1" size="0.01 0.224 0.025" material="light-wood" pos="0.214 0 0.035"/>
+
+      <geom name="container_close_collision" type="box" solref="0.005 1" priority="1" size="0.01 0.224 0.025" rgba="0 0 0 1" friction="0.5 0.005 0.0001" pos="-0.214 0 0.035"/>
+      <geom name="container_close_visual" type="box" contype="0" conaffinity="0" group="1" size="0.01 0.224 0.025" material="light-wood" pos="-0.214 0 0.035"/>
+    </body>
+
+    <!-- Objects -->
+      <body name="cube" pos="0.62 0.0 1.04" euler="1.570 0 0">
+            <freejoint name="cube"/>
+            <!-- Flip on the left wall (tightly, almos touch) -->
+            <geom name="cube" type="box" size="0.05 0.035 0.02" rgba="0.8 0 0 1"
+                  friction="1 0.005 0.0001" mass="0.1" condim="4"/>
+      </body>
+
+    <!-- Camera views -->
+    <camera name="sensor" mode="fixed" pos="0.65 0.6 1.8" euler="-0.7853975 0. 3.1415"/>
+    <camera name="frontview" mode="fixed" pos="1.6 0 1.45" quat="0.56 0.43 0.43 0.56"/>
+
+  </worldbody>
+
+  <!-- Set qpos to makesure the robot will direct move to the pos
+       ctrl is the control signal (torques/positions) have to wait to mj_step -->
+  <keyframe>
+    <key name="home"
+        qpos="0 0.48 0 -1.84 0 2.16 0.7853 0.04 0.04
+              0.62 0. 1.04 0.7071068 0.7071068 0 0"
+        ctrl="0 0.48 0 -1.84 0 2.16 0.7853 0.08"/>
+    <key name="home_2"
+        qpos="0 -0.7853 0 -2.35609 0 1.57079 0.7853 0.04 0.04
+              0.62 0. 1.04 0.7071068 0.7071068 0 0"
+        ctrl="0 -0.7853 0 -2.35609 0 1.57079 0.7853 0.08"/>
+  </keyframe>
+</mujoco>
