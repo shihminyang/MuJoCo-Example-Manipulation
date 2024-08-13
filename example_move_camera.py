@@ -118,8 +118,8 @@ if __name__ == '__main__':
     i = 0
     while True:
         i += 1
-        mujoco.mj_step(model, data, nstep=2)
-        mujoco_renderer.render(render_mode)
+        # mujoco.mj_step(model, data, nstep=2)
+        # mujoco_renderer.render(render_mode)
 
         if i % 10 != 0:
             continue
@@ -146,7 +146,8 @@ if __name__ == '__main__':
         camera.set_pose(pos, quat)
 
         # Update simulation
-        mujoco.mj_step(model, data, nstep=1)
+        # mujoco.mj_step(model, data, nstep=1)
+        mujoco.mj_forward(model, data)
         mujoco_renderer.render(render_mode)
 
         # Take a picture
