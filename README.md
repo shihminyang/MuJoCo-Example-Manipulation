@@ -55,6 +55,11 @@ python example_flip.py
 python example_grasp.py
 ```
 
+4. Perform camera moving (camera pose)
+```bash
+python example_move_camera.py
+```
+
 ![](docs/images/example_grasp.gif)
 
 
