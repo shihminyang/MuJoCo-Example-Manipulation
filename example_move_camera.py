@@ -18,10 +18,10 @@ class Camera:
         self.camera_id = mujoco.mj_name2id(
             model, mujoco.mjtObj.mjOBJ_CAMERA, camera_name)
         self.init_pos = model.camera(self.camera_id).pos.copy()
-        self.init_quat = model.camera(self.camera_id).quat.copy()
-        self.init_euler = R.from_quat(self.init_quat[[3, 0, 1, 2]]
+        self.init_quat = model.camera(self.camera_id).quat.copy()   # (qw, qx, qy, qz)
+        self.init_euler = R.from_quat(self.init_quat[[1, 2, 3, 0]]
                                       ).as_euler("XYZ")
-        self.init_mat = R.from_quat(self.init_quat[[3, 0, 1, 2]]).as_matrix()
+        self.init_mat = R.from_quat(self.init_quat[[1, 2, 3, 0]]).as_matrix()
 
         self.workspace = {'depth_min': 0, 'depth_max': 3}
 
@@ -141,7 +141,8 @@ if __name__ == '__main__':
         pos = camera.init_pos + delta_pos
         # (qx, qy, qz, qw) -> (qw, qx, qy, qz)
         quat = R.from_matrix(np.dot(camera.init_mat, delta_mat)
-                             ).as_quat()[[1, 2, 3, 0]]
+                             ).as_quat()[[3, 0, 1, 2]]
+
         camera.set_pose(pos, quat)
 
         # Update simulation
