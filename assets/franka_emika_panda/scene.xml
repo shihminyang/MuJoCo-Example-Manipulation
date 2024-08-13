@@ -83,7 +83,9 @@
       </body>
 
     <!-- Camera views -->
-    <camera name="sensor" mode="fixed" pos="0.65 0.6 1.8" euler="-0.7853975 0. 3.1415"/>
+    <camera name="sensor_1" mode="fixed" pos="0.65 0.65 1.65" euler="-0.7853975 0. 3.1415"/>
+    <camera name="sensor_2" mode="fixed" pos="1.00 0.65 1.65" euler="-0.7853975 0.34906585 3.1415"/>
+    <camera name="sensor_3" mode="fixed" pos="0.30 0.65 1.65" euler="-0.7853975 -0.34906585 3.1415"/>
     <camera name="frontview" mode="fixed" pos="1.6 0 1.45" quat="0.56 0.43 0.43 0.56"/>
 
   </worldbody>
